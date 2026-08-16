@@ -19,7 +19,35 @@ const NewsContextProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       setLoading(false);
+    }
+  };
 
+  const fetchTopHeadlines = async (options = {}) => {
+    setLoading(true);
+    try {
+      let url = "/top-headlines?";
+      
+      if (options.country) {
+        url += `country=${options.country}`;
+      }
+      if (options.category) {
+        url += `${url.endsWith("?") ? "" : "&"}category=${options.category}`;
+      }
+      if (options.sources) {
+        url += `${url.endsWith("?") ? "" : "&"}sources=${options.sources}`;
+      }
+      if (options.q) {
+        url += `${url.endsWith("?") ? "" : "&"}q=${options.q}`;
+      }
+      
+      url += `&apiKey=${import.meta.env.VITE_API_KEY}`;
+      
+      const response = await api.get(url);
+      setLoading(false);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
 
@@ -27,6 +55,7 @@ const NewsContextProvider = ({ children }) => {
     news,
     setNews,
     fetchNews,
+    fetchTopHeadlines,
     loading
   };
 
